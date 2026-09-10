@@ -2,14 +2,10 @@
 
 ## Project
 
-A personal Yocto layer built on vendor BSPs. This repo is one layer inside a
-larger `repo`-managed workspace; all boards stay on the same Yocto release.
-Read `conf/layer.conf` and the existing recipes before changing anything, and
-match the local style.
-
-Everything outside this repo — other layers, the build directory, `DL_DIR`,
-`SSTATE_DIR` — is out of scope. Don't edit files there and don't hardcode paths
-to them; use `${LAYERDIR}` and the usual variables instead.
+A personal set of Yocto layers built on top of vendor BSPs. This repo is a
+single folder with a set of layers inside a larger `repo`-managed workspace.
+All boards stay on the same Yocto release. There is a single `distro` layer
+and and many `bsp` layers. Also, there is a posibility for application layers.
 
 Add documentation when asked to the `doc/` folder with `ai-agent_` prefix.
 
@@ -39,12 +35,20 @@ the reference manual; verify with `bitbake-getvar` before relying on one. Custom
 variables are allowed only in our own recipes, must be prefixed (e.g. `MYDISTRO_`),
 and must be flagged as new. If unsure a variable exists, say so instead of guessing.
 
-**Don't touch** anything outside this repo — build output, caches, poky, vendor BSP
-layers. Fixes there go in a `.bbappend` here, or get flagged as an upstream patch.
+**Don't modify** anything outside this repo — build output, caches, poky, vendor BSP
+layers.
+
 No `cleanall` / `cleansstate`.
 
 **Don't move versions.** Never bump `SRCREV`, a branch, or a manifest revision on
 your own. New git `SRC_URI` entries need a pinned `SRCREV` and explicit `branch=`.
+
+You are allowed read acess to all folders on repo workspace. A repo workspace
+will have a `.repo` folder on its roots.
+
+Be brief.
+
+Avoid overly verbose comments.
 
 ## Teaching
 

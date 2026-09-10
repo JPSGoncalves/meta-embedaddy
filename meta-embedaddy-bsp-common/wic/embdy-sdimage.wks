@@ -1,0 +1,7 @@
+# short-description: Embedaddy disk image - FAT boot partition + ext4 rootfs
+#
+# Distro-side layout only. On a real SoC the BSP layer's .wks prepends
+# everything that runs before Linux.
+
+part /boot --source bootimg-partition --ondisk vda --fstype=vfat --label boot --active --align 4 --size 16
+part /     --source rootfs            --ondisk vda --fstype=ext4 --label root  --align 4
