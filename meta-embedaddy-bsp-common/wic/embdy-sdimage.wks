@@ -2,6 +2,7 @@
 #
 # Distro-side layout only. On a real SoC the BSP layer's .wks prepends
 # everything that runs before Linux.
+bootloader --ptable=gpt
 
-part /boot --source bootimg-partition --ondisk vda --fstype=vfat --label boot --active --align 4 --size 16
-part /     --source rootfs            --ondisk vda --fstype=ext4 --label root  --align 4
+part /boot --part-name=bootfs --size=64M  --use-uuid --fstype=vfat --label=boot --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/boot --active
+part /     --part-name=root --size=256M --use-uuid --fstype=ext4 --label=root --source rootfs --exclude-path=boot/
