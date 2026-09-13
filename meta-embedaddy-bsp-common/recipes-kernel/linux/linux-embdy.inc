@@ -11,3 +11,6 @@ SRC_URI:append  = " file://kernel.cfg"
 S = "${WORKDIR}/git"
 
 LINUX_VERSION_EXTENSION ?= "-embdy"
+PV = "${LINUX_VERSION}+git"
+
+do_kernel_configcheck[noexec] = "1"
