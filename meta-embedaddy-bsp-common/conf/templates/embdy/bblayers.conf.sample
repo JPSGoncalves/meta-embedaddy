@@ -8,6 +8,9 @@ BBFILES ?= ""
 BBLAYERS ?= " \
   ##OEROOT##/meta \
   ##OEROOT##/../meta-openembedded/meta-oe \
+  ##OEROOT##/../meta-openembedded/meta-python \
+  ##OEROOT##/../meta-st/meta-st-stm32mp \
   ##OEROOT##/../meta-embedaddy/meta-embedaddy-distro \
   ##OEROOT##/../meta-embedaddy/meta-embedaddy-bsp-common \
+  ##OEROOT##/../meta-embedaddy/meta-embedaddy-bsp-st \
   "
