@@ -1,14 +1,14 @@
 # short-description: STM32MP157F-DK2 SD card image
-# long-description: GPT: TF-A BL2 (fsbl1) | FIP | U-Boot env | vfat bootfs | ext4 rootfs
+# long-description: GPT: TF-A BL2 (fsbl1) | FIP | U-Boot env | ext4 bootfs | ext4 rootfs
 #
 # The ROM code looks for a GPT partition named fsbl1 (fsbl2 is an optional
 # fallback, omitted). TF-A BL2 looks for a partition named fip.
 
 bootloader --ptable gpt
 
-part fsbl1 --source rawcopy --sourceparams="file=${DEPLOY_DIR_IMAGE}/arm-trusted-firmware/tf-a-stm32mp157f-dk2-opteemin-sdcard.stm32" --ondisk mmcblk --part-name=fsbl1 --part-type 0x8301 --fixed-size 256K --align 17
-part fip   --source rawcopy --sourceparams="file=${DEPLOY_DIR_IMAGE}/fip/fip-stm32mp157f-dk2-opteemin-sdcard.bin" --ondisk mmcblk --part-name=fip --part-type 19d5df83-11b0-457b-be2c-7559c13142a5 --fixed-size 4096K
-part u-boot-env --source empty --ondisk mmcblk --part-name=u-boot-env --part-type 0x8301 --fixed-size 512K
+part       --part-name=fsbl1      --fixed-size=256K  --source=rawcopy --sourceparams="file=${DEPLOY_DIR_IMAGE}/arm-trusted-firmware/tf-a-stm32mp157f-dk2-opteemin-sdcard.stm32" --ondisk=mmcblk --part-type=0x8301 --align=17
+part       --part-name=fip        --fixed-size=4096K --source=rawcopy --sourceparams="file=${DEPLOY_DIR_IMAGE}/fip/fip-stm32mp157f-dk2-opteemin-sdcard.bin"                     --ondisk=mmcblk --part-type=19d5df83-11b0-457b-be2c-7559c13142a5
+part       --part-name=u-boot-env --fixed-size=512K  --source=empty --ondisk=mmcblk --part-type=0x8301
 
-part /boot --source rootfs --rootfs-dir=${IMAGE_ROOTFS}/boot --ondisk mmcblk --part-name=bootfs --fstype=vfat --label=boot --fixed-size 64M --active
-part /     --source rootfs --exclude-path=boot/ --ondisk mmcblk --part-name=rootfs --fstype=ext4 --label=root --fixed-size 256M --uuid 257bf3ad-3d89-4b5c-844d-3bbeff52d92f
+part /boot --part-name=bootfs     --fixed-size=64M   --use-uuid                                  --fstype=ext4 --label=boot --source=rootfs --rootfs-dir=${IMAGE_ROOTFS}/boot --active --ondisk=mmcblk
+part /     --part-name=rootfs     --size=256M        --uuid=257bf3ad-3d89-4b5c-844d-3bbeff52d92f --fstype=ext4 --label=root --source=rootfs --exclude-path=boot/ --ondisk=mmcblk
