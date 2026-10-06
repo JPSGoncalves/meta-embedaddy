@@ -1,0 +1,52 @@
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
+
+# JH7110_VF2_6.12_v6.0.0
+SRCREV:dc-roma-fml13v01 = "c6a092cd80112529cb2e92e180767ff5341b22a3"
+
+SRC_URI:dc-roma-fml13v01 = "git://github.com/starfive-tech/opensbi;branch=JH7110_VisionFive2_devel;protocol=https"
+SRC_URI:append:dc-roma-fml13v01 = "\
+	file://visionfive2-uboot-fit-image.its \
+	file://0001-inclue-sbi_utils-Cleanup-int-vs-bool-in-semihosting_.patch \
+	file://0002-include-sbi-Fix-compiling-with-C23-enabled-compilers.patch \
+	file://0003-Makefile-don-t-grep-when-setting-CC_SUPPORT_ZICSR_ZI.patch \
+	"
+
+DEPENDS:append:beaglev-fire = " hss-payload-generator-native"
+DEPENDS:append:jh7110 = " u-boot-tools-native dtc-native"
+
+EXTRA_OEMAKE:append:milkv-duo-common = " FW_FDT_PATH=${DEPLOY_DIR_IMAGE}/u-boot.dtb"
+
+# opensbi's own Makefile hardcodes CFLAGS and ignores TARGET_CFLAGS, so its
+# debug info embeds raw TMPDIR/HOME source paths. Skip the buildpaths QA check
+# on the dbg package.
+INSANE_SKIP:${PN}-dbg:append:dc-roma-fml13v01 = "buildpaths"
+
+_DEPS = ""
+_DEPS:milkv-duo-common = "virtual/bootloader:do_deploy"
+
+do_compile[depends] += "${_DEPS}"
+
+# BeagleV-Fire boots from the Hart Software Services (HSS) stored in eNVM and
+# HSS only starts payloads that are wrapped in its own boot image format. The
+# OpenSBI fw_payload.bin already holds U-Boot as its S-mode payload, so
+# starting it in M-mode gives a mainline OpenSBI control of M-mode instead of
+# the OpenSBI that is built into HSS. skip-opensbi makes HSS start
+# fw_payload.bin on all four U54 harts directly. Without it the OpenSBI in HSS
+# keeps the secondary harts and Linux brings up a single CPU.
+do_deploy:append:beaglev-fire() {
+	cd ${WORKDIR}
+	cp ${DEPLOYDIR}/fw_payload.bin fw_payload.bin
+	cat > hss-payload.yaml <<-EOF
+		set-name: 'PolarFire-SoC-HSS::OpenSBI'
+		hart-entry-points: {u54_1: '${RISCV_SBI_FW_TEXT_START}', u54_2: '${RISCV_SBI_FW_TEXT_START}', u54_3: '${RISCV_SBI_FW_TEXT_START}', u54_4: '${RISCV_SBI_FW_TEXT_START}'}
+		payloads:
+		  fw_payload.bin: {exec-addr: '${RISCV_SBI_FW_TEXT_START}', owner-hart: u54_1, secondary-hart: u54_2, secondary-hart: u54_3, secondary-hart: u54_4, priv-mode: prv_m, skip-opensbi: true}
+	EOF
+	hss-payload-generator -c hss-payload.yaml -v ${DEPLOYDIR}/payload.bin
+}
+
+do_deploy:append:dc-roma-fml13v01() {
+	install -m 0644 ${UNPACKDIR}/visionfive2-uboot-fit-image.its ${DEPLOYDIR}/visionfive2-uboot-fit-image.its
+	cd ${DEPLOYDIR}
+	mkimage -f visionfive2-uboot-fit-image.its -A riscv -O u-boot -T firmware visionfive2_fw_payload.img
+}
