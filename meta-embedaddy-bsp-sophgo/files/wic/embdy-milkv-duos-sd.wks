@@ -2,5 +2,5 @@
 
 bootloader  --ptable msdos
 
-part /boot --part-name=bootfs     --fixed-size=128M  --align 1024 --use-uuid                                  --fstype=vfat --label=boot --source bootimg-partition --active --ondisk
-part /     --part-name=rootfs     --size=256M        --align 1024 --uuid=257bf3ad-3d89-4b5c-844d-3bbeff52d92f --fstype=ext4 --label=root --source=rootfs --ondisk=mmcblk
+part /boot --fixed-size=128M  --align 1024 --use-uuid --fstype=vfat --label=boot --source bootimg-partition --active --ondisk=mmcblk0
+part /     --size=256M        --align 1024            --fstype=ext4 --label=root --source=rootfs                     --ondisk=mmcblk0
