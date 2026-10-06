@@ -1,5 +1,4 @@
 PACKAGECONFIG = " \
-    cgroupv2 \
     kmod \
     randomseed \
     sysusers \
