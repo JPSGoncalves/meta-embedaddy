@@ -1,0 +1,5 @@
+require u-boot-embdy.inc
+
+# v2026.10
+SRCREV = "5508406582f6f7120dce0c4b3059819a41788db2"
+DEPENDS += "gnutls-native"
