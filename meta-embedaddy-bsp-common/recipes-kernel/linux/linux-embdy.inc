@@ -6,6 +6,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI:append  = " file://kernel.cfg"
+SRC_URI:append  = " file://nfsroot.cfg"
 
 S = "${WORKDIR}/git"
 
@@ -21,6 +22,3 @@ do_deploy:append() {
         ln -sf config-${KERNEL_ARTIFACT_NAME} ${DEPLOYDIR}/config-${KERNEL_ARTIFACT_LINK_NAME}
     fi
 }
-
-KCONFIG_MODE:embdy-milkv-duos = "alldefconfig"
-KBUILD_DEFCONFIG:embdy-milkv-duos = "defconfig"
