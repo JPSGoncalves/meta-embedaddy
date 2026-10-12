@@ -1,0 +1,31 @@
+From cdfc71c7c455b6a2325c73dae413d0c9618d023f Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Jo=C3=A3o=20Paulo=20Gon=C3=A7alves?=
+ <jpaulo.silvagoncalves@gmail.com>
+Date: Mon, 12 Oct 2026 14:19:07 -0300
+Subject: [PATCH] riscv64: dts: sophgo: c906 coprocessor DDR workaround
+maxLineLength=150
+
+Upstream-Status: Inappropriate [workaround before remoteproc implementation]
+---
+ dts/upstream/src/riscv/sophgo/sg2000-milkv-duo-s.dts | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/dts/upstream/src/riscv/sophgo/sg2000-milkv-duo-s.dts b/dts/upstream/src/riscv/sophgo/sg2000-milkv-duo-s.dts
+index 78a257839f6f..1440017bdbfe 100644
+--- a/dts/upstream/src/riscv/sophgo/sg2000-milkv-duo-s.dts
++++ b/dts/upstream/src/riscv/sophgo/sg2000-milkv-duo-s.dts
+@@ -22,6 +22,16 @@
+ 		stdout-path = "serial0:115200n8";
+ 	};
+
++	/* Only use 500 MiB
++	  Workaround to use the coprocessor for now that run from
++	  the last 2MiB of DDR
++	*/
++	memory@80000000 {
++		reg = <0x80000000 0x1f400000>;
++	};
++
+ 	wifi_pwrseq: wifi-pwrseq {
+ 		compatible = "mmc-pwrseq-simple";
+ 		reset-gpios = <&porta 15 GPIO_ACTIVE_LOW>;

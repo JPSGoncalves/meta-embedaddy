@@ -46,6 +46,12 @@ EXTRA_OEMAKE = "${EXTRA_OEMAKE_COMMON} \
                 LOADER_2ND_PATH=${DEPLOY_DIR_IMAGE}/u-boot.bin \
                 "
 
+# Coprocessor firmware packing
+COPRO_FW_BIN ?= ""
+COPRO_FW_PATH = "${@bb.utils.which(d.getVar('BBPATH'), 'files/firmware/${COPRO_FW_BIN}')}"
+
+EXTRA_OEMAKE:append = "${@' BLCP_2ND_PATH=${COPRO_FW_PATH}' if d.getVar('COPRO_FW_BIN') else ''}"
+
 do_compile[depends] += "opensbi:do_deploy virtual/bootloader:do_deploy"
 
 # The FSBL needs the board memory map, which the vendor SDK generates from a
