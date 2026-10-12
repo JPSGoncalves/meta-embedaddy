@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * Example overlay: 24C02 EEPROM at 0x50 on i2c4 (already pinmuxed and
+ * enabled by sg2000-milkv-duo-s.dts).
+ */
+
+/dts-v1/;
+/plugin/;
+
+&i2c4 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	eeprom@50 {
+		compatible = "atmel,24c02";
+		reg = <0x50>;
+		pagesize = <8>;
+	};
+};
